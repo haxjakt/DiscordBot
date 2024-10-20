@@ -33,7 +33,17 @@
         <dependency>
             <groupId>net.haxjakt</groupId>
             <artifactId>discord-bot</artifactId>
-            <version>0.0.1</version>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.haxjakt</groupId>
+            <artifactId>discord-script</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.haxjakt</groupId>
+            <artifactId>discord-core</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

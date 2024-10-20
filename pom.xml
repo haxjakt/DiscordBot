@@ -34,6 +34,7 @@
 		<java.version>17</java.version>
 		<spring.boot.version>3.3.4</spring.boot.version>
 		<jda.version>5.1.2</jda.version>
+		<antlr4.version>4.13.2</antlr4.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -61,6 +62,21 @@
 				<optional>true</optional>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-mongodb</artifactId>
+				<version>${spring.boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-runtime</artifactId>
+				<version>${antlr4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${antlr4.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>net.dv8tion</groupId>
 				<artifactId>JDA</artifactId>
 				<version>${jda.version}</version>
@@ -80,14 +96,14 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-docker-compose</artifactId>
-			<version>${spring.boot.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-	</dependencies>
+<!--	<dependencies>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-docker-compose</artifactId>-->
+<!--			<version>${spring.boot.version}</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
+<!--	</dependencies>-->
 
 	<build>
 		<plugins>
