@@ -20,6 +20,8 @@
 	<modules>
 		<module>bot</module>
 		<module>main</module>
+		<module>core</module>
+		<module>script</module>
 	</modules>
 	<scm>
 		<connection/>
@@ -68,7 +70,6 @@
 				<artifactId>lombok</artifactId>
 				<version>1.18.34</version>
 				<scope>provided</scope>
-				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -78,6 +79,15 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-docker-compose</artifactId>
+			<version>${spring.boot.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
