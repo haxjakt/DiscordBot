@@ -21,4 +21,8 @@ public class ProgramRecord {
     private String javaSourceCode;
 
     private String javaByteCodeBase64;
+
+    private String authorId;
+
+    private String guildId;
 }
