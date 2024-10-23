@@ -32,28 +32,33 @@ public class JDAManager {
     }
 
     public void registerCommandById(String id) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        System.out.println("Attempting to register command");
+        log.info(STR."Registering command defined in program with id: \{id}");
         var maybeProgram = repository.findById(id);
         if (maybeProgram.isEmpty()) {
             log.error(STR."Cannot find program with id: \{id}");
+            return;
         }
-        log.info("Found program with name: " + maybeProgram.get().getScriptName());
         var program = maybeProgram.get();
-        var byteCode = Base64.getDecoder().decode(program.getJavaByteCodeBase64().getBytes());
+        log.info("Found program with name: {} matching id: {}", program.getScriptName(), id);
+        
+        byte[] byteCode = Base64.getDecoder().decode(program.getJavaByteCodeBase64().getBytes());
         CustomClassLoader loader = new CustomClassLoader();
         Class<?> clazz = loader.defineClass(program.getScriptName(), byteCode);
-        Object instance = clazz.getDeclaredConstructor().newInstance();
+        ListenerAdapter instance = (ListenerAdapter) clazz.getDeclaredConstructor().newInstance();
         Method dataMethod = clazz.getDeclaredMethod("getCommandData");
 
         CommandData commandData = (CommandData) dataMethod.invoke(instance);
-//        System.out.println(commandData.getName());
 
-        jda.getGuildById(testGuildId).upsertCommand(commandData).queue();
-        jda.addEventListener((ListenerAdapter) instance);
+        addDynamicCommand(commandData, instance);
 
         System.out.println(STR."Registered program with id: \{id}");
     }
 
+    private addDynamicCommand(CommandData commandData, ListenerAdapter adapter) {
+        jda.getGuildById(testGuildId).upsertCommand(commandData).queue();
+        jda.addEventListener(adapter);
+    }
+    
     public void registerCommand(String name, String description) {
         jda.getGuildById(testGuildId).upsertCommand(Commands.slash(name, description)).queue();
     }
