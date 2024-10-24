@@ -28,6 +28,11 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>net.haxjakt</groupId>
+            <artifactId>discord-script</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
         </dependency>

@@ -1,0 +1,14 @@
+discord:
+  token: YOUR_DISCORD_BOT_TOKEN
+  testGuild: THE_UUID_OF_A_GUILD_WHERE_YOU_WANT_TO_TEST
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: THE_NAME_OF_YOUR_MONGO_DB
+  #      username: your_username  # Optional if authentication is enabled
+  #      password: your_password  # Optional if authentication is enabled
+  jpa:
+    hibernate:
+      ddl-auto: update

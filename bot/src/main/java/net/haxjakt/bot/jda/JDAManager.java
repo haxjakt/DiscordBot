@@ -26,16 +26,11 @@ public class JDAManager {
     public final JDA jda;
     public final ProgramRepository repository;
 
-    @PostConstruct
-    public void listMethods() {
-
-    }
-
     public void registerCommandById(String id) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        log.info(STR."Registering command defined in program with id: \{id}");
+        log.info("Registering command defined in program with id: " + id);
         var maybeProgram = repository.findById(id);
         if (maybeProgram.isEmpty()) {
-            log.error(STR."Cannot find program with id: \{id}");
+            log.error("Cannot find program with id: " + id);
             return;
         }
         var program = maybeProgram.get();
@@ -51,10 +46,10 @@ public class JDAManager {
 
         addDynamicCommand(commandData, instance);
 
-        System.out.println(STR."Registered program with id: \{id}");
+        System.out.println("Registered program with id: " + id);
     }
 
-    private addDynamicCommand(CommandData commandData, ListenerAdapter adapter) {
+    private void addDynamicCommand(CommandData commandData, ListenerAdapter adapter) {
         jda.getGuildById(testGuildId).upsertCommand(commandData).queue();
         jda.addEventListener(adapter);
     }
