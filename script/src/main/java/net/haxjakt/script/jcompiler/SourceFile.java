@@ -1,4 +1,4 @@
-package net.haxjakt.script.engine;
+package net.haxjakt.script.jcompiler;
 
 import javax.tools.SimpleJavaFileObject;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.net.URI;
 public class SourceFile extends SimpleJavaFileObject {
     private final String sourceCode;
 
-    protected SourceFile(String className, String sourceCode) {
+    public SourceFile(String className, String sourceCode) {
         super(URI.create("string:///" + className.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);
         this.sourceCode = sourceCode;
     }

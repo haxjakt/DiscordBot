@@ -1,4 +1,4 @@
-package net.haxjakt.script.engine;
+package net.haxjakt.script.jcompiler;
 
 import javax.tools.SimpleJavaFileObject;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +9,7 @@ import java.net.URI;
 public class BytecodeFile extends SimpleJavaFileObject {
     private ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
 
-    protected BytecodeFile(String className, Kind kind) {
+    public BytecodeFile(String className, Kind kind) {
         super(URI.create("bytes:///" + className.replace('.', '/') + kind.extension), kind);
     }
 

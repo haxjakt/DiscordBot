@@ -36,7 +36,7 @@ public class JDAManager {
         var program = maybeProgram.get();
         log.info("Found program with name: {} matching id: {}", program.getScriptName(), id);
         
-        byte[] byteCode = Base64.getDecoder().decode(program.getJavaByteCodeBase64().getBytes());
+        byte[] byteCode = program.getJavaByteCode();
         CustomClassLoader loader = new CustomClassLoader();
         Class<?> clazz = loader.defineClass(program.getScriptName(), byteCode);
         ListenerAdapter instance = (ListenerAdapter) clazz.getDeclaredConstructor().newInstance();

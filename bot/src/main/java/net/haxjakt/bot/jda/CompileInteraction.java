@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.haxjakt.core.ProgramRecord;
 import net.haxjakt.core.ProgramRepository;
-import net.haxjakt.script.engine.ProgramTranslator;
+import net.haxjakt.script.api.ProgramTranslator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -51,14 +51,15 @@ public class CompileInteraction extends ListenerAdapter {
     }
 
     private String translateAndSaveScript(final String scriptContent) {
-        var javaProgram = translator.translate(scriptContent);
-        var byteCode = translator.compile(scriptContent);
-        var scriptName = translator.getScriptName();
+
+        translator.init(scriptContent);
+        translator.run();
+        var programResult = translator.getResult();
 
         ProgramRecord record = ProgramRecord.builder()
-                .scriptName(scriptName)
-                .javaSourceCode(javaProgram)
-                .javaByteCodeBase64(new String(Base64.getEncoder().encode(byteCode)))
+                .scriptName(programResult.getProgramName())
+                .javaSourceCode(programResult.getProgramJava())
+                .javaByteCode(programResult.getProgramByte())
                 .build();
         record = repository.save(record);
 

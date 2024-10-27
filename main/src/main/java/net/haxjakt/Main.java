@@ -2,17 +2,12 @@ package net.haxjakt;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.haxjakt.bot.jda.ExampleCommand;
 import net.haxjakt.bot.jda.JDAManager;
-import net.haxjakt.core.ProgramRecord;
 import net.haxjakt.core.ProgramRepository;
-import net.haxjakt.script.engine.ProgramTranslator;
+import net.haxjakt.script.api.ProgramTranslator;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Base64;
 
 @SpringBootApplication
 @AllArgsConstructor

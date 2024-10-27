@@ -1,4 +1,4 @@
-package net.haxjakt.script.engine;
+package net.haxjakt.script.jcompiler;
 
 import javax.tools.*;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.util.Map;
 public class CustomFilemanager extends ForwardingJavaFileManager<StandardJavaFileManager> {
     private final Map<String, BytecodeFile> classFiles = new HashMap<>();
 
-    protected CustomFilemanager(StandardJavaFileManager fileManager) {
+    public CustomFilemanager(StandardJavaFileManager fileManager) {
         super(fileManager);
     }
 

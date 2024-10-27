@@ -20,7 +20,7 @@ public class ProgramRecord {
 
     private String javaSourceCode;
 
-    private String javaByteCodeBase64;
+    private byte[] javaByteCode;
 
     private String authorId;
 
