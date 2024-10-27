@@ -20,6 +20,10 @@ public class SlashCommand implements PrintableComponent, Comparable<SlashCommand
         replyMessage = "";
     }
 
+    public String getCommandDataDeclaration() {
+        return "Commands.slash(\"%s\", \"generated\")".formatted(name);
+    }
+
     @Override
     public String printComponent(int ident) {
         final String nl = System.lineSeparator();

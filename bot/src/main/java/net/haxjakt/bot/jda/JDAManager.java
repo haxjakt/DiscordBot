@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Base64;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -42,7 +42,8 @@ public class JDAManager {
         ListenerAdapter instance = (ListenerAdapter) clazz.getDeclaredConstructor().newInstance();
         Method dataMethod = clazz.getDeclaredMethod("getCommandData");
 
-        CommandData commandData = (CommandData) dataMethod.invoke(instance);
+        List<? extends CommandData> commandData;
+        commandData = (List<? extends CommandData>) dataMethod.invoke(instance);
 
         addDynamicCommand(commandData, instance);
 
@@ -51,6 +52,11 @@ public class JDAManager {
 
     private void addDynamicCommand(CommandData commandData, ListenerAdapter adapter) {
         jda.getGuildById(testGuildId).upsertCommand(commandData).queue();
+        jda.addEventListener(adapter);
+    }
+
+    private void addDynamicCommand(List<? extends CommandData> commandData, ListenerAdapter adapter) {
+        jda.getGuildById(testGuildId).updateCommands().addCommands(commandData).queue();
         jda.addEventListener(adapter);
     }
     

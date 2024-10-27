@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Program implements PrintableComponent{
 
@@ -22,6 +23,7 @@ public class Program implements PrintableComponent{
     public Program(final String name) {
         programName = name;
         fqnImports.add("net.dv8tion.jda.api.hooks.ListenerAdapter");
+        fqnImports.add("java.util.List");
     }
 
     public void doImport(final String fullyQualifiedName) {
@@ -59,13 +61,17 @@ public class Program implements PrintableComponent{
     }
 
     private String printCommandData() {
-        String commandName = slashCommands.iterator().next().getName();
-        return
-            """
-                public CommandData getCommandData() {
-                    return Commands.slash("%s", "generated");
-                }
-            """.formatted(commandName) + NL;
+        StringBuilder commandData = new StringBuilder(tab(1));
+        commandData.append("public List<CommandData> getCommandData() {").append(NL);
+        commandData.append(tab(2)).append("return List.of(").append(NL).append(tab(3));
+
+        String delimiter = ',' + NL + tab(3);
+        String commandDataRawList = slashCommands.stream().map(SlashCommand::getCommandDataDeclaration)
+                .collect(Collectors.joining(delimiter));
+        commandData.append(commandDataRawList).append(NL).append(tab(2)).append(");").append(NL);
+        commandData.append(tab(1)).append("}  // end method: getCommandData").append(NL.repeat(2));
+
+        return commandData.toString();
     }
 
     private String printSlashCommandListener() {
@@ -80,5 +86,9 @@ public class Program implements PrintableComponent{
 
         listener.append("    }  // end method: onSlashCommandInteraction").append(NL.repeat(2));
         return listener.toString();
+    }
+
+    private String tab(int ident) {
+        return "    ".repeat(ident);
     }
 }

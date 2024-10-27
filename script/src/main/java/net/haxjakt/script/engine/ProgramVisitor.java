@@ -12,7 +12,7 @@ public class ProgramVisitor extends DiscordScriptBaseVisitor<Program> {
         program = new Program(ctx.scriptDeclaration().IDENTIFIER().toString());
 
         CommandVisitor visitor = new CommandVisitor(program);
-        program.addSlashCommand(visitor.visitCommand(ctx.command()));
+        ctx.command().forEach(commandCtx -> program.addSlashCommand(visitor.visitCommand(commandCtx)));
 
         return program;
     }

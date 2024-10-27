@@ -5,7 +5,7 @@ STRING: '"' (~["])* '"';
 COMMENT: '#' ~[\r\n]* -> skip;
 WS: [ \t\r\n]+ -> skip;
 
-program: scriptDeclaration command;
+program: scriptDeclaration command*;
 //programBody: (command)*;
 
 scriptDeclaration: 'script' IDENTIFIER ';';
