@@ -9,10 +9,10 @@ import net.haxjakt.script.grammar.DiscordScriptParser;
 @RequiredArgsConstructor
 public class CommandVisitor  extends DiscordScriptBaseVisitor<SlashCommand> {
     private final Program program;
-    private SlashCommand command = null;
+
     @Override
     public SlashCommand visitCommand(DiscordScriptParser.CommandContext ctx) {
-        command = new SlashCommand(program, ctx.commandIdentifiers().IDENTIFIER().toString());
+        SlashCommand command = new SlashCommand(program, ctx.commandIdentifiers().IDENTIFIER().toString());
         command.setReplyMessage(ctx.printString().STRING().toString());
         return command;
     }

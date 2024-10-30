@@ -2,6 +2,8 @@ package net.haxjakt.script.components;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -17,8 +19,9 @@ public class Program implements PrintableComponent{
     /** The fully qualified names of the classes needed to be imported */
     private final Set<String> fqnImports = new TreeSet<>();
 
-    /** Slash commands declared in the program */
+    /** interactions declared in the program */
     private final Set<SlashCommand> slashCommands = new TreeSet<>();
+    private final Set<MessageMenu> messageMenus = new TreeSet<>();
 
     public Program(final String name) {
         programName = name;
@@ -35,6 +38,13 @@ public class Program implements PrintableComponent{
         doImport("net.dv8tion.jda.api.interactions.commands.build.CommandData");
         doImport("net.dv8tion.jda.api.interactions.commands.build.Commands");
         slashCommands.add(slashCommand);
+    }
+
+    public void addMessageMenu(final MessageMenu messageMenu) {
+        doImport("");
+        doImport("net.dv8tion.jda.api.interactions.commands.build.CommandData");
+        doImport("net.dv8tion.jda.api.interactions.commands.build.Commands");
+        messageMenus.add(messageMenu);
     }
 
     @Override
@@ -66,8 +76,16 @@ public class Program implements PrintableComponent{
         commandData.append(tab(2)).append("return List.of(").append(NL).append(tab(3));
 
         String delimiter = ',' + NL + tab(3);
-        String commandDataRawList = slashCommands.stream().map(SlashCommand::getCommandDataDeclaration)
-                .collect(Collectors.joining(delimiter));
+        List<String> slashCommandData = slashCommands.stream().map(SlashCommand::getCommandDataDeclaration)
+                .toList();
+        List<String> messageCommandData = messageMenus.stream().map(MessageMenu::getCommandDataDeclaration)
+                .toList();
+
+        List<String> allCommands = new ArrayList<>();
+        allCommands.addAll(slashCommandData);
+        allCommands.addAll(messageCommandData);
+        String commandDataRawList = String.join(delimiter, allCommands);
+
         commandData.append(commandDataRawList).append(NL).append(tab(2)).append(");").append(NL);
         commandData.append(tab(1)).append("}  // end method: getCommandData").append(NL.repeat(2));
 
@@ -85,6 +103,20 @@ public class Program implements PrintableComponent{
         });
 
         listener.append("    }  // end method: onSlashCommandInteraction").append(NL.repeat(2));
+        return listener.toString();
+    }
+
+    private String pringMessageMenuListener() {
+        StringBuilder listener = new StringBuilder();
+        listener.append("    @Override").append(NL)
+                .append("    public void onMessageContextInteraction(MessageContextInteractionEvent event) {")
+                .append(NL);
+
+        messageMenus.forEach(messageMenu -> {
+            listener.append(messageMenu.printComponent(2));
+        });
+
+        listener.append("    }  // end method: onMessageMenuInteraction").append(NL.repeat(2));
         return listener.toString();
     }
 

@@ -5,12 +5,17 @@ STRING: '"' (~["])* '"';
 COMMENT: '#' ~[\r\n]* -> skip;
 WS: [ \t\r\n]+ -> skip;
 
-program: scriptDeclaration command*;
+program: scriptDeclaration block*;
 //programBody: (command)*;
 
 scriptDeclaration: 'script' IDENTIFIER ';';
 
+block:
+    command |
+    messageMenu;
+
 command: 'command' commandIdentifiers '{' printString '}';
+messageMenu: 'message-context' IDENTIFIER '{' printString '}';
 commandIdentifiers: IDENTIFIER;
 printString: 'print' STRING ';';
 //genericCommandLine: ~(';')+ ';'; // simplify logic

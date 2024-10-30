@@ -46,7 +46,7 @@ public class ProgramTranslator {
         CommonTokenStream cts = new CommonTokenStream(lexer);
 
         DiscordScriptParser parser = new DiscordScriptParser(cts);
-//        parser.removeErrorListeners();
+//        parser.removeErrorListeners();  // TODO i kinda need a custom error listener :)
 
         ProgramVisitor programVisitor = new ProgramVisitor();
         return programVisitor.visitProgram(parser.program());
