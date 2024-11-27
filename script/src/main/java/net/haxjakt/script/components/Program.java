@@ -2,10 +2,7 @@ package net.haxjakt.script.components;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Program implements PrintableComponent{
@@ -20,31 +17,28 @@ public class Program implements PrintableComponent{
     private final Set<String> fqnImports = new TreeSet<>();
 
     /** interactions declared in the program */
-    private final Set<SlashCommand> slashCommands = new TreeSet<>();
-    private final Set<MessageMenu> messageMenus = new TreeSet<>();
+    private final Set<FunctionalBlock> interactions = new TreeSet<>();
+
+    private final Map<String, ProgramVariable> variables = new HashMap<>();
 
     public Program(final String name) {
         programName = name;
         fqnImports.add("net.dv8tion.jda.api.hooks.ListenerAdapter");
         fqnImports.add("java.util.List");
+        fqnImports.add("net.dv8tion.jda.api.interactions.commands.build.CommandData");
     }
 
     public void doImport(final String fullyQualifiedName) {
         fqnImports.add(fullyQualifiedName);
     }
 
-    public void addSlashCommand(final SlashCommand slashCommand) {
-        doImport("net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent");
-        doImport("net.dv8tion.jda.api.interactions.commands.build.CommandData");
-        doImport("net.dv8tion.jda.api.interactions.commands.build.Commands");
-        slashCommands.add(slashCommand);
+    public void addVariable(final ProgramVariable variable) {
+        variables.put(variable.getVariableName(), variable);
     }
 
-    public void addMessageMenu(final MessageMenu messageMenu) {
-        doImport("");
-        doImport("net.dv8tion.jda.api.interactions.commands.build.CommandData");
-        doImport("net.dv8tion.jda.api.interactions.commands.build.Commands");
-        messageMenus.add(messageMenu);
+    public void addInteraction(FunctionalBlock block) {
+        fqnImports.addAll(block.getRequiredImports());
+        interactions.add(block);
     }
 
     @Override
@@ -63,6 +57,7 @@ public class Program implements PrintableComponent{
 
         program.append(printCommandData());
         program.append(printSlashCommandListener());
+        program.append(printMessageMenuListener());
 
         // print class definition: end
         program.append("}  // end class: ").append(programName).append(NL.repeat(2));
@@ -76,29 +71,28 @@ public class Program implements PrintableComponent{
         commandData.append(tab(2)).append("return List.of(").append(NL).append(tab(3));
 
         String delimiter = ',' + NL + tab(3);
-        List<String> slashCommandData = slashCommands.stream().map(SlashCommand::getCommandDataDeclaration)
-                .toList();
-        List<String> messageCommandData = messageMenus.stream().map(MessageMenu::getCommandDataDeclaration)
-                .toList();
+        commandData.append(
+                interactions.stream().map(FunctionalBlock::getCommandData).collect(Collectors.joining(delimiter))
+        );
 
-        List<String> allCommands = new ArrayList<>();
-        allCommands.addAll(slashCommandData);
-        allCommands.addAll(messageCommandData);
-        String commandDataRawList = String.join(delimiter, allCommands);
-
-        commandData.append(commandDataRawList).append(NL).append(tab(2)).append(");").append(NL);
+        commandData.append(NL).append(tab(2)).append(");").append(NL);
         commandData.append(tab(1)).append("}  // end method: getCommandData").append(NL.repeat(2));
 
         return commandData.toString();
     }
 
     private String printSlashCommandListener() {
+        boolean hasSlashCommands = interactions.stream().anyMatch(interaction -> interaction.getType().equals(BlockType.SLASH_COMMAND));
+        if (!hasSlashCommands) return "";
+
         StringBuilder listener = new StringBuilder();
         listener.append("    @Override").append(NL)
                 .append("    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {")
                 .append(NL);
 
-        slashCommands.forEach(slashCommand -> {
+        interactions.stream()
+                .filter(interaction -> interaction.getType().equals(BlockType.SLASH_COMMAND))
+                .forEach(slashCommand -> {
             listener.append(slashCommand.printComponent(2));
         });
 
@@ -106,13 +100,15 @@ public class Program implements PrintableComponent{
         return listener.toString();
     }
 
-    private String pringMessageMenuListener() {
+    private String printMessageMenuListener() {
         StringBuilder listener = new StringBuilder();
         listener.append("    @Override").append(NL)
                 .append("    public void onMessageContextInteraction(MessageContextInteractionEvent event) {")
                 .append(NL);
 
-        messageMenus.forEach(messageMenu -> {
+        interactions
+                .stream().filter(interaction -> interaction.getType().equals(BlockType.MESSAGE_MENU))
+                .forEach(messageMenu -> {
             listener.append(messageMenu.printComponent(2));
         });
 

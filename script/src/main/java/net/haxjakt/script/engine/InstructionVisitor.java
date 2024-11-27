@@ -1,4 +1,6 @@
 package net.haxjakt.script.engine;
 
-public class InstructionVisitor {
+import net.haxjakt.script.grammar.DiscordScriptBaseVisitor;
+
+public class InstructionVisitor extends DiscordScriptBaseVisitor<String> {
 }

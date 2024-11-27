@@ -2,6 +2,7 @@ package net.haxjakt.script.api;
 
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import net.haxjakt.script.components.Program;
 import net.haxjakt.script.engine.ProgramVisitor;
 import net.haxjakt.script.jcompiler.CustomFilemanager;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.tools.*;
 import java.util.*;
 
+@Log4j2
 @Component
 public class ProgramTranslator {
     private ProgramDTO programDTO = new ProgramDTO();
@@ -30,8 +32,7 @@ public class ProgramTranslator {
         programDTO.setProgramName(program.getProgramName());
         programDTO.setProgramJava(program.printComponent(0));
 
-        // todo debug
-        System.out.println(programDTO.getProgramJava());
+        log.info(programDTO.getProgramJava());
 
         programDTO.setProgramByte(compile(program));
     }
@@ -46,7 +47,6 @@ public class ProgramTranslator {
         CommonTokenStream cts = new CommonTokenStream(lexer);
 
         DiscordScriptParser parser = new DiscordScriptParser(cts);
-//        parser.removeErrorListeners();  // TODO i kinda need a custom error listener :)
 
         ProgramVisitor programVisitor = new ProgramVisitor();
         return programVisitor.visitProgram(parser.program());
