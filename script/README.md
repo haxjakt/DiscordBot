@@ -2,7 +2,9 @@
 
 ## 1. General script structure
 
-The script must contain the script declaration (`script-decl`) on the first line, followed by blocks describing features of the script (`f-block`).
+The script must contain the script declaration (`script-decl`) on the first line, followed by blocks describing features
+of the script (`f-block`). If the script does not contain a script declaration, the program is considered to be
+ill-formed and the compilation should not proceed.
 
 ### 1.1 `script-decl`
 
